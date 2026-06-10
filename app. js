@@ -1,0 +1,45 @@
+const express = require('express');
+const app = express();
+const PORT = 5000; // Change checking kosam port 5000 pettaను
+
+// Middleware to log requests (ఏ client update request vachina terminal lo choopistundi)
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} request received at ${req.url}`);
+    next();
+});
+
+// 1. Home Route - Direct HTML formatting handling
+app.get('/', (req, res) => {
+    res.send(`
+        <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
+            <h1 style="color: #4CAF50;">Express App Server Dynamic Side</h1>
+            <p>Ee server direct ga backend nunchi custom HTML content testondi.</p>
+            <hr style="width: 50%; margin: 20px auto;">
+            <p>Mee data access cheyyడానికి: <a href="/api/status" style="color: #008CBA;">/api/status</a> link ni click cheyyandi.</p>
+        </div>
+    `);
+});
+
+// 2. API Route - Current server standard information loading 
+app.get('/api/status', (req, res) => {
+    res.json({
+        status: "Online",
+        uptime: process.uptime(),
+        environment: "Development",
+        message: "Everything is running smoothly!"
+    });
+});
+
+// 3. Dynamic API Parameter Route (Example: http://localhost:5000/user/Bharath)
+app.get('/user/:name', (req, res) => {
+    const userName = req.params.name;
+    res.json({
+        message: `Welcome back, ${userName}!`,
+        accessTime: new Date()
+    });
+});
+
+// Server Listening
+app.listen(PORT, () => {
+    console.log(`New Server configuration is active on http://localhost:${PORT}`);
+});
